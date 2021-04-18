@@ -4,7 +4,7 @@ const db = require('../../db/connection');
 
 // Get all roles
 router.get('/roles', (req, res) => {
-  const sql = `SELECT * FROM roles`;
+  const sql = `SELECT * FROM roles`; //displays title, role_id, department_id, and salary
 
   db.query(sql, (err, rows) => {
     if (err) {

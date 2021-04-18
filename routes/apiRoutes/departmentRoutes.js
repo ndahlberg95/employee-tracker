@@ -4,7 +4,7 @@ const db = require('../../db/connection');
 
 // Get all departments
 router.get('/roles', (req, res) => {
-  const sql = `SELECT * FROM departments`; //display department table (IDs + names)
+  const sql = `SELECT * FROM departments`; //display department table (id + department_name)
 
   db.query(sql, (err, rows) => {
     if (err) {

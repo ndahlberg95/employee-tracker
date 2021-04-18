@@ -7,4 +7,6 @@ const db = mysql.createConnection({
   database: 'company'
 });
 
+db.connect(function(){console.log ("Database is now connected!")})
+
 module.exports = db;

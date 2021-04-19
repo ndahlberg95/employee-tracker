@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const db = require('./db/connection');
 
-db.connect(async function(){
+db.connect(async function () {
     runINQ();
 })
 
@@ -140,7 +140,42 @@ function runINQ() {
                 }
             },
         ])
+
     };
+
+    // const promptUpdateEmployee = async () => {
+    //     console.log(`
+    // =================
+    // Update an Employee
+    // =================
+    // `);
+    //     let choices = await db.employees.getEmployees();
+    //     console.log(choices)
+    //     return new Promise((resolve, reject) => {
+    //         inquirer.prompt([
+    //             {
+    //                 name: "employee",
+    //                 type: "list",
+    //                 message: "Please select an employee to update: ",
+    //                 choices: choices
+    //             },
+    //             {
+    //                 type: 'input',
+    //                 name: 'employeeNewRole',
+    //                 message: 'What is the employees new role? (Required)',
+    //                 validate: employeeNewRoleInput => {
+    //                     if (employeeNewRoleInput) {
+    //                         return true;
+    //                     } else {
+    //                         console.log('Please enter a new role!');
+    //                         return false;
+    //                     }
+    //                 }
+    //             },
+    //         ])
+    //     });
+    // };
+
 
     const whatWouldYouLikeToDoNext = userInput => {
         return inquirer
@@ -166,25 +201,35 @@ function runINQ() {
         let next = await whatWouldYouLikeToDoNext();
         if (next.nextOption === 'View All Departments') {
             const sql = `SELECT * FROM departments`;
-            const queryResult = (await db.promise().query(sql)) [0];
+            const queryResult = (await db.promise().query(sql))[0];
         }
         if (next.nextOption === 'View All Roles') {
-            const queryResult2 = (await db.promise().query(`SELECT * FROM roles`)) [0];
+            const queryResult2 = (await db.promise().query(`SELECT * FROM roles`))[0];
         }
         if (next.nextOption === 'View All Employees') {
-            const queryResult3 = (await db.promise().query(`SELECT * FROM employees`)) [0];
+            const queryResult3 = (await db.promise().query(`SELECT * FROM employees`))[0];
         }
         if (next.nextOption === 'Add a Department') {
             let departmentResponses = await promptDepartments();
-            console.log (departmentResponses)
-            await db.promise().query(`INSERT INTO departments (department_name) VALUES (?)`, [departmentResponses.departmentName]);
+            await db.promise().query(`INSERT INTO roles (department_name) VALUES (?)`,
+                [departmentResponses.departmentName]);
         };
         if (next.nextOption === 'Add a Role') {
             let roleResponses = await promptRole();
+            await db.promise().query(`INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`,
+                [roleResponses.roleName, roleResponses.roleSalary, roleResponses.roleDepartment]);
         }
         if (next.nextOption === 'Add an Employee') {
             let employeeResponses = await promptEmployee();
+            await db.promise().query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`,
+                [employeeResponses.employeeFirstName, employeeResponses.employeeLastName, employeeResponses.employeeRole, employeeResponses.employeeManager]);
         };
+        // if (next.nextOption === 'Update an Employee') {
+        //     let updateEmployeeResponses = await promptUpdateEmployee();
+        //     //select employee by id?
+        //     await db.promise().query(`INSERT INTO employees (role_id) VALUES (?)`, 
+        //         [updateEmployeeResponses.employeeNewRole]);
+        // };
         doNext();
     };
 
@@ -192,6 +237,6 @@ function runINQ() {
 };
 
 process.on("SIGINT", function () {
-    console.log ("Program is exitting!");
+    console.log("Program is exitting!");
     db.destroy()
 })

@@ -67,12 +67,12 @@ function runINQ() {
             {
                 type: 'input',
                 name: 'roleDepartment',
-                message: 'Enter your roles deparment (Required)',
+                message: 'Enter your roles deparment id (Required)',
                 validate: roleDepartmentInput => {
                     if (roleDepartmentInput) {
                         return true;
                     } else {
-                        console.log('You need to enter an email address!');
+                        console.log('You need to enter a department id!');
                         return false;
                     }
                 }
@@ -116,12 +116,12 @@ function runINQ() {
             {
                 type: 'input',
                 name: 'employeeRole',
-                message: 'Enter your employees role (Required)',
+                message: 'Enter your employees role id (Required)',
                 validate: employeeRoleInput => {
                     if (employeeRoleInput) {
                         return true;
                     } else {
-                        console.log('You need to enter an email address!');
+                        console.log('You need to enter a role id!');
                         return false;
                     }
                 }
@@ -129,12 +129,12 @@ function runINQ() {
             {
                 type: 'input',
                 name: 'employeeManager',
-                message: 'Enter your employees manager (Required)',
-                validate: employeeManager => {
+                message: 'Enter your employees manager id (Required)',
+                validate: employeeManager => { 
                     if (employeeManager) {
                         return true;
                     } else {
-                        console.log('You need to enter an office number!');
+                        console.log('You need to enter a managers id!');
                         return false;
                     }
                 }
@@ -202,16 +202,19 @@ function runINQ() {
         if (next.nextOption === 'View All Departments') {
             const sql = `SELECT * FROM departments`;
             const queryResult = (await db.promise().query(sql))[0];
+            console.table (queryResult);
         }
         if (next.nextOption === 'View All Roles') {
             const queryResult2 = (await db.promise().query(`SELECT * FROM roles`))[0];
+            console.table (queryResult2);
         }
         if (next.nextOption === 'View All Employees') {
             const queryResult3 = (await db.promise().query(`SELECT * FROM employees`))[0];
+            console.table (queryResult3);
         }
         if (next.nextOption === 'Add a Department') {
             let departmentResponses = await promptDepartments();
-            await db.promise().query(`INSERT INTO roles (department_name) VALUES (?)`,
+            await db.promise().query(`INSERT INTO departments (department_name) VALUES (?)`,
                 [departmentResponses.departmentName]);
         };
         if (next.nextOption === 'Add a Role') {
